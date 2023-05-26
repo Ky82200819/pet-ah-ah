@@ -1,5 +1,5 @@
 
-wait(5)
+wait(1)
 
 local Network = require(game:GetService("ReplicatedStorage").Library.Client.Network)
 local Fire, Invoke = Network.Fire, Network.Invoke
