@@ -2182,18 +2182,7 @@ end
 
 local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/vKn3eqix')))()
 
-local Window = OrionLib:MakeWindow({Name = "--name", HidePremium = false, SaveConfig = true, ConfigFolder = "Psx"})
-local INFO = Window:MakeTab({
-	Name = "IMPORTANT",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-uwu:AddParagraph("Have Fun!!")
-local Misc = Window:MakeTab({
-	Name = "Misc",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
+local Window = OrionLib:MakeWindow({Name = "frag", HidePremium = false, SaveConfig = true, ConfigFolder = "Psx"})
 
 local AutoCompleteSection = Misc:AddSection({
 	Name = "Auto Complete Game"
