@@ -1,3 +1,4 @@
+
 wait(1)
 
 local Network = require(game:GetService("ReplicatedStorage").Library.Client.Network)
@@ -2180,7 +2181,7 @@ function GetPlayerCash(coin)
     return tonumber(amountstrnocomas)
 end
 
-local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/vKn3eqix')))()
+local OrionLib = loadstring(game:HttpGet(('https://raw.githubusercontent.com/shlexware/Orion/main/source')))()
 
 local Window = OrionLib:MakeWindow({Name = "Frag", HidePremium = false, SaveConfig = true, ConfigFolder = "Psx"})
 
